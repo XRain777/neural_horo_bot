@@ -62,8 +62,11 @@ for event in longpoll.listen():
         message_text = event.object['message']['text']
         if peer_id not in peer_dates:
             peer_dates[peer_id] = datetime.today()
+        date_text = peer_dates[peer_id].date().strftime("%d.%m.%Y")
         if message_text in SIGNS:
             posts = vk_user.wall.get(owner_id=-193489972, count=100)
+
+            post_found = False
 
             for post in posts['items']:
                 if 'is_pinned' in post:
@@ -77,6 +80,7 @@ for event in longpoll.listen():
 
                 keyboard = build_keyboard(peer_id)
 
+                post_found = True
                 vk_bot.messages.send(
                     peer_id=peer_id,
                     random_id=get_random_id(),
@@ -84,6 +88,14 @@ for event in longpoll.listen():
                     message=text
                 )
                 break
+
+            if not post_found:
+                vk_bot.messages.send(
+                    peer_id=peer_id,
+                    random_id=get_random_id(),
+                    keyboard=keyboard.get_keyboard(),
+                    message=f"Гороскоп на дату {date_text} не найден."
+                )
         elif message_text == ARROW_LEFT:
             peer_dates[peer_id] = peer_dates[peer_id] + timedelta(days=-1)
             keyboard = build_keyboard(peer_id)
