@@ -64,6 +64,7 @@ for event in longpoll.listen():
             peer_dates[peer_id] = datetime.today()
         date_text = peer_dates[peer_id].date().strftime("%d.%m.%Y")
         if message_text in SIGNS:
+            keyboard = build_keyboard(peer_id)
             posts = vk_user.wall.get(owner_id=-193489972, count=100)
 
             post_found = False
@@ -77,8 +78,6 @@ for event in longpoll.listen():
 
                 text = re.search(re.compile("^" + message_text + '.*', re.MULTILINE), post['text']).group(0)
                 text = text + "\n\n(" + datetime.fromtimestamp(post['date']).strftime("%d.%m.%Y") + ")"
-
-                keyboard = build_keyboard(peer_id)
 
                 post_found = True
                 vk_bot.messages.send(
