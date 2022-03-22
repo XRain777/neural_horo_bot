@@ -56,6 +56,13 @@ def build_keyboard(peer_id):
     return result
 
 
+vk_bot.messages.send(
+    peer_id=os.environ['VK_ADMIN_ID'],
+    random_id=get_random_id(),
+    message="Бот запущен."
+)
+
+
 for event in longpoll.listen():
     if event.type == VkBotEventType.MESSAGE_NEW:
         peer_id = event.object['message']['peer_id']
