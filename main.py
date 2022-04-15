@@ -83,8 +83,21 @@ for event in longpoll.listen():
                    post['date'] > calendar.timegm((peer_dates[peer_id] + timedelta(days=1)).date().timetuple()):
                     continue
 
-                text = re.search(re.compile("^" + message_text + '.*', re.MULTILINE), post['text']).group(0)
-                text = text + "\n\n(" + datetime.fromtimestamp(post['date']).strftime("%d.%m.%Y") + ")"
+                horoscope = re.search(re.compile("^" + message_text + '.*', re.MULTILINE), post['text']).group(0)
+
+                horoscope_date_text = datetime.fromtimestamp(post['date']).strftime("%d.%m.%Y")
+
+                horoscope_date_difference = (datetime.today().date() - datetime.fromtimestamp(post['date']).date()).days
+                if horoscope_date_difference == 2:
+                  horoscope_date_difference_text = ", позавчера"
+                elif horoscope_date_difference == 1:
+                  horoscope_date_difference_text = ", вчера"
+                elif horoscope_date_difference == 0:
+                  horoscope_date_difference_text = ", сегодня"
+                else:
+                  horoscope_date_difference_text = ""
+
+                text = horoscope + "\n\n" + "(" + horoscope_date_text + horoscope_date_difference_text + ")"
 
                 post_found = True
                 vk_bot.messages.send(
