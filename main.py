@@ -11,12 +11,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-vk_session_user = vk_api.VkApi(token=os.environ['VK_USER_TOKEN'])
-vk_user = vk_session_user.get_api()
-vk_session_bot = vk_api.VkApi(token=os.environ['VK_GROUP_TOKEN'])
-vk_bot = vk_session_bot.get_api()
+vk_user_session = vk_api.VkApi(token=os.environ['VK_USER_TOKEN'])
+vk_user = vk_user_session.get_api()
+vk_bot_session = vk_api.VkApi(token=os.environ['VK_BOT_TOKEN'])
+vk_bot = vk_bot_session.get_api()
 
-longpoll = VkBotLongPoll(vk_session_bot, os.environ['VK_GROUP_ID'])
+vk_bot_longpoll = VkBotLongPoll(vk_bot_session, os.environ['VK_BOT_GROUP_ID'])
 
 SIGNS = [
     '♈️Овен',
@@ -63,7 +63,7 @@ vk_bot.messages.send(
 )
 
 
-for event in longpoll.listen():
+for event in vk_bot_longpoll.listen():
     if event.type == VkBotEventType.MESSAGE_NEW:
         peer_id = event.object['message']['peer_id']
         message_text = event.object['message']['text']
